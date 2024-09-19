@@ -1,0 +1,257 @@
+*,
+::before,
+::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: #e5e7eb;
+}
+
+body, h2, p, h1 {
+  margin: 0;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  background-image: url(subtle-prism\ \(1\).svg);
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+#main-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  max-width: 90rem;
+  margin: 0 auto;
+  gap: 2rem;
+}
+
+#main-form {
+  padding: 0.5rem;
+  display: flex;
+  border: none;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.main-form-input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.main-form-input-container > label {
+  font-weight: 500;
+}
+
+.form-input {
+  outline: 1px solid #4338ca;
+  border-radius: 0.375rem;
+  padding: 0.5rem;
+}
+
+.main-form-helper-text {
+  font-size: 0.75rem;
+  font-weight: 300;
+}
+
+#main-form-btn {
+  background-color: #4338ca;
+  padding: 0.5rem 1rem;
+  color: white;
+  text-decoration: none;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 500;
+  border-radius: 0.375rem;
+  opacity: 0.8;
+  transition: all 100ms ease;
+}
+
+#contacts-list {
+  margin: 0;
+  padding: 0.5rem;
+  list-style: none;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  border-radius: 0.375rem;
+  border: 1px solid #4338ca;
+  border-width: 2px;
+}
+
+.edit-btn {
+  width: 2.3rem;
+  height: 2.3rem;
+  border-width: 2px;
+  border-radius: 0.3rem;
+  color: #4338ca;
+  border-color: #4338ca;
+  opacity: 0.8;
+  background-color: rgba(255, 255, 255, 0.603);
+  transition: all 200ms ease;
+}
+
+.delete-btn {
+  width: 2.3rem;
+  height: 2.3rem;
+  border-width: 2px;
+  border-radius: 0.3rem;
+  color: red;
+  border-color: red;
+  opacity: 0.8;
+  background-color: rgba(255, 255, 255, 0.603);
+  transition: all 200ms ease;
+}
+
+.inputs-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  flex-grow: 1;
+}
+
+.inputs-container > input {
+  width: 100%;
+  outline: 1px solid #4338ca;
+  border-radius: 0.375rem;
+  padding: 0.5rem;
+}
+
+.btns-container {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.contacts-list-item {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+.contacts-list-item-name-input {
+  background-color: #4438cacc;
+  backdrop-filter: blur(3px);
+  color: white;
+}
+.contacts-list-item-phone-input {
+  background-color: #4438cacc;
+  color: white;
+}
+
+.edit-btn:hover {
+  color: white;
+  border: none;
+  background-color: #4338ca;
+  transform: translatey(-2px);
+  opacity: 1;
+  transition: all 0.2s ease;
+}
+.delete-btn:hover {
+  color: white;
+  background-color: red;
+  border: none;
+  opacity: 1;
+  transform: translatey(-2px);
+}
+#main-form-btn:hover {
+  background-color: #231b64;
+  font-weight: 600;
+  border-width: 2px;
+  border-color: #231b64;
+  letter-spacing: 1.5px;
+  border-radius: 1.2rem;
+  opacity: 1;
+}
+
+.delete-btn:active {
+  background-color: rgb(150, 26, 17);
+  border: none;
+  transform: translatey(2px);
+}
+.edit-btn:active {
+  background-color: #231b64;
+  border: none;
+  transform: translatey(2px);
+}
+
+.valid {
+  outline: 1px solid green;
+}
+
+.invalid {
+  outline: 1px solid red;
+}
+
+.invalidText {
+  color: red;
+}
+
+.hidden {
+  display: none;
+}
+
+#main-form-btn:disabled {
+  background-color: #4338ca;
+  padding: 0.5rem 1rem;
+  color: white;
+  text-decoration: none;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 500;
+  border-radius: 0.375rem;
+  opacity: 0.8;
+  letter-spacing: normal;
+  border: none;
+}
+
+.editando {
+  background-color: #231b64;
+  color: white;
+  opacity: 1;
+}
+
+.edit {
+  background-color: #231b64;
+  transition: all 0.2s ease;
+}
+
+.invalidEdit {
+  border-width: 1px;
+  border-color: red;
+  transition: all 0.2s ease;
+}
+
+@media (min-width: 768px) {
+  #main-form {
+    width: 70%;
+  }
+
+  #contacts-list {
+    width: 70%;
+  }
+
+  .inputs-container {
+    flex-wrap: nowrap;
+  }
+
+  #main-container {
+    align-items: center;
+  }
+}
+
+@media (min-width: 1024px) {
+  #main-form {
+    width: 50%;
+  }
+
+  #contacts-list {
+    width: 50%;
+  }
+  
+}
