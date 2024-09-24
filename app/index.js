@@ -104,6 +104,7 @@ const contacsManagerInit = () => {
     }
     return publicAPI;
 }
+
 const contactsManager = contacsManagerInit();
 
 const checkValidations = () => {
@@ -135,6 +136,15 @@ const validateInput = (input, validation) => {
         helpText.classList.remove("hidden");
     }
 };
+
+//esta funcion comprueba si la lista esta vacia, childElementCount comprueba la cantidad de hijos que tiene la ul y devuelve un numero 
+const displayList = () => {
+    if (contactsList.childElementCount === 0) {
+        contactsList.style.display = 'none';
+    } else {
+        contactsList.style.display = 'flex';
+    }
+}
 //evento: Input
 nameInput.addEventListener('input', e => {
     nameInputValidation = NAME_REGEX.test(nameInput.value);
@@ -178,6 +188,7 @@ form.addEventListener('submit', (e) => {
     //mostrar en el html
     console.log('mostrando en el html...')
     contactsManager.renderContacts();
+    displayList();
 });
 //Este evento se ejecuta cada vez que se detecta un click en la lista de contactos
 contactsList.addEventListener('click', e => {
@@ -200,7 +211,7 @@ contactsList.addEventListener('click', e => {
         contactsManager.saveInBrowser();
         //Se renderiza el array sin e contacto eliminado
         contactsManager.renderContacts();
-        
+        displayList();
     }
     if (editBtn) {
             //Selecciono el li
@@ -278,4 +289,6 @@ window.onload = () => {
     }
     //muestro los ,contactos en el html
     contactsManager.renderContacts();
+
+    displayList();
 }
