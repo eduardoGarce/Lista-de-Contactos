@@ -1,0 +1,50 @@
+{
+  "users": [
+    {
+      "id": "c88a",
+      "username": "gas"
+    },
+    {
+      "id": "06e0",
+      "username": "pedro"
+    }
+  ],
+  "todos": [
+    {
+      "id": "ee97",
+      "name": "Eduard Hfdfdf",
+      "phone": "04267112732",
+      "user": "pedro"
+    },
+    {
+      "id": "9cbe",
+      "name": "Eduard Hfdfdf",
+      "phone": "04267000000",
+      "user": "pedro"
+    },
+    {
+      "id": "7681",
+      "name": "Eduardo Ga",
+      "phone": "04247608527",
+      "user": "gas"
+    },
+    {
+      "id": "12f4",
+      "name": "Eduardo Ga",
+      "phone": "04247608527",
+      "user": "gas"
+    },
+    {
+      "id": "b902",
+      "name": "Eduardo Ga",
+      "phone": "04247608527",
+      "user": "gas"
+    },
+    {
+      "id": "efd1",
+      "name": "Eduardo Ga",
+      "phone": "04247608527",
+      "user": "gas"
+    }
+  ]
+}

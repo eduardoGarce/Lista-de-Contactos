@@ -4,8 +4,14 @@ const nameInput = document.querySelector("#name-input");
 const phoneInput = document.querySelector("#phone-input");
 const mainFormBtn = document.querySelector("#main-form-btn");
 const contactsList = document.querySelector("#contacts-list")
+//bd
+const user = JSON.parse(localStorage.getItem('user'));
+const closeBtn = document.querySelector('#cerrar-btn')
 
-console.log(form, nameInput, phoneInput, mainFormBtn);
+//bd
+if (!user) {
+    window.location.href = '../index.html';
+}
 
 const NAME_REGEX = /^[A-Z]{1}[a-z]*[ ][A-Z]{1}[a-z]*$/;
 const PHONE_REGEX = /^(0212|0412|0424|0414|0426|0416)[0-9]{7}$/;
@@ -15,11 +21,7 @@ let phoneInputValidation = false
 
 //contactos
 const contacsManagerInit = () => {
-    let contacts = [];
     const publicAPI = {
-        getContacts: () => {
-            return contacts;
-        },
         //JSDOC
         /**
          * Agrega un nuevo contacto.
@@ -29,38 +31,33 @@ const contacsManagerInit = () => {
          * @param {string} newContact.phone - El telefono del contacto.
          * @returns void.
          */
-        addContac: (newContac) => {
-            contacts = contacts.concat(newContac);
+        addContac: async () => {
+            const responseJSON = await fetch('http://localhost:3003/todos', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'aplication/json'
+                },
+                body: JSON.stringify({name: nameInput.value, phone: phoneInput.value, user: user.username})
+                });
+
             console.log('Guardado el nuevo contacto!')
         },
-        saveInBrowser: () => {
-            localStorage.setItem('contactsList', JSON.stringify(contacts));
-            console.log('Guardado en el navegador!');
-        },
-        replaceContacts: (localContacts) => {
-            contacts = localContacts;
-        },
-
-        renderContacts: ()=> {
+        renderContacts: async ()=> {
             //borrar el contenido de la lista
             contactsList.innerHTML = '';
-            // console.log(contacts)
-            console.log('renderContacts')
 
-            //crear un bucle
-            contacts.forEach(contacts => {
-                //2acceder a cada contacto
-                // console.log(contacts);
+            const response = await fetch('http://localhost:3003/todos', {method: 'GET'});
+            const todos = await response.json();
+            const userTodos = todos.filter(todo => todo.user === user.username);
 
-                //3 crear un li para cada contacto
-                const ListItem = document.createElement('li');
-                ListItem.classList.add('contacts-list-item');
-                ListItem.id = contacts.id;
-
-                //4 crear la estructurra para cada li
-                ListItem.innerHTML = `<div class="inputs-container">
-            <input class="contacts-list-item-name-input" type="text" value="${contacts.name}" readonly>
-            <input class="contacts-list-item-phone-input" type="text" value="${contacts.phone}" readonly>
+            userTodos.forEach(todo => {
+            const listItem = document.createElement('li');
+            listItem.id = todo.id;
+            listItem.classList.add('contacts-list-item');
+            //4 crear la estructurra para cada li
+            listItem.innerHTML = `<div class="inputs-container">
+            <input class="contacts-list-item-name-input" type="text" value="${todo.name}" readonly>
+            <input class="contacts-list-item-phone-input" type="text" value="${todo.phone}" readonly>
         </div>
         <div class="btns-container">
             <button class="edit-btn">
@@ -78,28 +75,9 @@ const contacsManagerInit = () => {
             </button>
         </div>`;
 
-                //5 agregar el li a la ul (como un hijo)
-                contactsList.append(ListItem);
-
-            })
-            
-            
-        },
-        deleteContacts: (id) => {
-            contacts = contacts.filter(contact => {
-                if (id !== contact.id) {
-                    return contact;
-                }
+                contactsList.append(listItem);
             });
-        },
-        editContact: (editedContact) => {
-            contacts = contacts.map(contacts => {
-                if (editedContact.id === contacts.id) {
-                    return editedContact;
-                } else {
-                    return contacts;
-                }
-            })
+            displayList();
         }
     }
     return publicAPI;
@@ -139,7 +117,7 @@ const validateInput = (input, validation) => {
 
 //esta funcion comprueba si la lista esta vacia, childElementCount comprueba la cantidad de hijos que tiene la ul y devuelve un numero 
 const displayList = () => {
-    if (contactsList.childElementCount === 0) {
+    if (contactsList.children.length == 0) {
         contactsList.style.display = 'none';
     } else {
         contactsList.style.display = 'flex';
@@ -158,64 +136,47 @@ phoneInput.addEventListener('input', e => {
     checkValidations();
 });
 //PATRONES DE DISENO
-form.addEventListener('submit', (e) => {
-    console.log('Anadiendo contacto...');
-    //Elimino la funcionalidad por defecto del formulario
+form.addEventListener('submit', async (e) => {
+    //bd
     e.preventDefault();
 
-    //Validando que ambas validaciones osn correctas
     if (!nameInputValidation || !phoneInputValidation) return;
-    console.log('Contacto validado correctamente');
 
-    //creo el nuevo contacto
-    console.log('Creando el objeto del contacto...');
-    const newContact = {
-        id: crypto.randomUUID(),
-        name: nameInput.value,
-        phone: phoneInput.value,
-    }
-
-    console.log('Objeto del contacto creado', newContact);
-
-    //Anado el contacto al array
-    console.log('Anadiendo contacto...')
-    contactsManager.addContac(newContact);
-
-    //Guardo los contactos en el navegador
-    console.log('Anadiendo contactos al navegador')
-    contactsManager.saveInBrowser();
+    contactsManager.addContac();
 
     //mostrar en el html
     console.log('mostrando en el html...')
     contactsManager.renderContacts();
-    displayList();
 });
+
 //Este evento se ejecuta cada vez que se detecta un click en la lista de contactos
-contactsList.addEventListener('click', e => {
+contactsList.addEventListener('click', async e => {
     //Selecciono el boton de eliminar
     //Target es para seleccionar el elemento o div que se esta clickeando
     //Closest es para que al seleccionar cualquier elemento hijo de delete-btn se seleccione directamente delete-btn
     const deleteBtn = e.target.closest('.delete-btn');
     //Lo mismo que lo anterior pero con una clase diferente
     const editBtn = e.target.closest('.edit-btn');
-
-    //Si se clikea el boton de eliminar se empieza el proceso de eliminar
+    
     if (deleteBtn) {
-        //selecciono el li del boton clickeado
-        const li = deleteBtn.parentElement.parentElement;
-        //obtengo el id del li seleccionado
-        const id = li.id;
-        //Se elimina el contacto del array de contactos
-        contactsManager.deleteContacts(id);
-        //Se guarda el array actualizado en el navegador
-        contactsManager.saveInBrowser();
-        //Se renderiza el array sin e contacto eliminado
-        contactsManager.renderContacts();
-        displayList();
-    }
-    if (editBtn) {
+            //selecciono el li del boton clickeado
+            const li = deleteBtn.parentElement.parentElement;
+            //obtengo el id del li seleccionado
+            const id = li.id;
+
+            await fetch(`http://localhost:3003/todos/${id}`, {
+            method: 'DELETE'
+            });
+            li.remove();
+
+            //Se renderiza el array sin el contacto eliminado
+            contactsManager.renderContacts();
+    } else if (editBtn) {
             //Selecciono el li
             const li = editBtn.parentElement.parentElement;
+            //obtengo el id del li seleccionado
+            const id = li.id;
+
             //Selecciono ambos inputs
             const nameImputEdit = li.children[0].children[0];
             const phoneImputEdit = li.children[0].children[1];
@@ -244,22 +205,18 @@ contactsList.addEventListener('click', e => {
                 phoneImputEdit.setAttribute('readonly', true);
                 nameImputEdit.classList.remove('edit');
                 phoneImputEdit.classList.remove('edit');
-                
-            //Creo el contacto editado usanado la informacion del html
-            const contactEdited = {
-                id: li.id,
-                name: nameImputEdit.value,
-                phone: phoneImputEdit.value
-            }
 
-            //Se crea un array con el nuevo contacto editado
-            contactsManager.editContact(contactEdited);
-            //Se guarda el array actualizado en el navegador
-            contactsManager.saveInBrowser();
-            //Se renderriza el array sin el contacto eliminado
-            contactsManager.renderContacts();
+                await fetch(`http://localhost:3003/todos/${id}`, {
+                    method: 'PATCH',
+                    headers: {
+                    'Content-Type': 'aplication/json'
+                    },
+                    body: JSON.stringify({name: nameImputEdit.value, phone: phoneImputEdit.value})
+                });
 
-            console.log('No esta editando');
+                contactsManager.renderContacts();
+
+                console.log('No esta editando');
         } else {
             //Se añade la clases editando al boton de edicion
             editBtn.classList.add('editando');
@@ -275,20 +232,12 @@ contactsList.addEventListener('click', e => {
     }
 });
 
+closeBtn.addEventListener('click', async e => {
+    localStorage.removeItem('user');
+    window.location.href = '../index.html';
+});
+
 window.onload = () => {
-    //obtengo los contactos de local storage
-    const getContacsLocal = localStorage.getItem("contactsList");
-    //paso los contactos de json a js
-    const  contactsLocal = JSON.parse(getContacsLocal);
-    if (!contactsLocal) {
-        //Reemplazo los contactos con un array vacio
-        contactsManager.replaceContacts([]);
-    }else {
-        //reemplazo el array de contactos guardados en el navegador
-        contactsManager.replaceContacts(contactsLocal);
-    }
     //muestro los ,contactos en el html
     contactsManager.renderContacts();
-
-    displayList();
 }
